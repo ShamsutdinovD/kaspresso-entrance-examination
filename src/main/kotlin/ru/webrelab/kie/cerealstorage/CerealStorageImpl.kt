@@ -84,5 +84,6 @@ class CerealStorageImpl(
             sb.append("${cereal.local}: $amount / $containerCapacity\n")
         }
         return sb.toString()
+
     }
 }

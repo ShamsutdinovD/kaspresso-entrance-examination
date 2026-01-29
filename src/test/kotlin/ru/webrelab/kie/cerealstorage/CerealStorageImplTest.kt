@@ -76,6 +76,7 @@ class CerealStorageImplTest {
         storage.removeContainer(Cereal.MILLET)
         assertEquals(0f, storage.getAmount(Cereal.MILLET))
     }
+
 }
 
 
