@@ -48,7 +48,7 @@ class CerealStorageImpl(
         val currentAmount = storage[cereal] ?: 0f
         val amountToTake = if (amount <= currentAmount) amount else 0f
         storage[cereal] = currentAmount - amountToTake
-        return amountToTake
+        return if (amount <= currentAmount) amountToTake else currentAmount
     }
 
     override fun removeContainer(cereal: Cereal): Boolean {

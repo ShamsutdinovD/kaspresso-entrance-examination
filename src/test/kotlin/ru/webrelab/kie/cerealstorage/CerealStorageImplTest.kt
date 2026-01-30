@@ -25,10 +25,17 @@ class CerealStorageImplTest {
     }
 
     @Test
-    fun `getCereal returns the correct amount or remainder of the container`() {
+    fun `getCereal returns the correct amount`() {
         storage.addCereal(Cereal.RICE, 10f)
         val taken = storage.getCereal(Cereal.RICE, 4f)
         assertEquals(6f, storage.getAmount(Cereal.RICE), 0.01f)
+    }
+
+    @Test
+    fun `getCereal returns remainder of the container`() {
+        storage.addCereal(Cereal.RICE, 10f)
+        val taken = storage.getCereal(Cereal.RICE, 12f)
+        assertEquals(10f, storage.getAmount(Cereal.RICE), 0.01f)
     }
 
     @Test
