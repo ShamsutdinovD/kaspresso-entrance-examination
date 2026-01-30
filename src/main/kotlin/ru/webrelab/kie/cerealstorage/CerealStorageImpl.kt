@@ -26,22 +26,20 @@ class CerealStorageImpl(
         val currentAmount = storage[cereal] ?: 0f
         val spaceInContainer = containerCapacity - currentAmount
 
-        val amountContainerInStorage = floor(storageCapacity/containerCapacity)
-        val containerCount = storage.keys.size
-        if (containerCount >= amountContainerInStorage) {
-            throw IllegalStateException("Нет места в хранилище для нового контейнера")
+        if (storage.containsKey(cereal)) {
+            val canAdd = if (amount <= spaceInContainer) amount else spaceInContainer
+            storage[cereal] = currentAmount + canAdd
+            return amount - canAdd
+        } else {
+            val amountContainerInStorage = floor(storageCapacity/containerCapacity)
+            val containerCount = storage.keys.size
+            if (containerCount >= amountContainerInStorage) {
+                throw IllegalStateException("Нет места в хранилище для нового контейнера")
+            }
+            val canAdd = if (amount <= containerCapacity) amount else containerCapacity
+            storage[cereal] = canAdd
+            return amount - canAdd
         }
-
-        val containerExists = storage.containsKey(cereal)
-        if (!containerExists && currentAmount == 0f) {
-            storage[cereal] = 0f
-        }
-
-        val canAdd = if (amount <= spaceInContainer) amount else spaceInContainer
-        val newAmount = currentAmount + canAdd
-        storage[cereal] = newAmount
-
-        return amount - canAdd
     }
 
     override fun getCereal(cereal: Cereal, amount: Float): Float {

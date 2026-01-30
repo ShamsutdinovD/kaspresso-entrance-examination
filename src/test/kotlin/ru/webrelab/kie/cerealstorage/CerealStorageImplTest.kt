@@ -137,4 +137,12 @@ class CerealStorageImplTest {
             storage.addCereal(Cereal.BULGUR, 10f)
         }
     }
+
+    @Test
+    fun `should add the cereal to the existing container`() {
+        storage.addCereal(Cereal.RICE, 5f)
+        storage.addCereal(Cereal.BUCKWHEAT, 10f)
+        storage.addCereal(Cereal.RICE, 3f)
+        assertEquals(8f, storage.getAmount(Cereal.RICE))
+    }
 }
