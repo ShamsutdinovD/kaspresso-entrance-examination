@@ -21,37 +21,26 @@ class CerealStorageImpl(
 
     override fun addCereal(cereal: Cereal, amount: Float): Float {
         if (amount < 0) throw IllegalArgumentException("Количество не может быть отрицательным")
+
         val currentAmount = storage[cereal] ?: 0f
-        val currentContainerAmount = currentAmount
+        val spaceInContainer = containerCapacity - currentAmount
 
-        val amountContainer = storageCapacity/containerCapacity
-
-        val spaceLeftInContainer = containerCapacity - currentContainerAmount
-
-        val amountToAdd = if (amount <= spaceLeftInContainer) {
-            amount
-        } else {
-            spaceLeftInContainer
+        val amountContainerInStorage = storageCapacity/containerCapacity
+        val containerCount = storage.keys.size
+        if (containerCount >= amountContainerInStorage) {
+            throw IllegalStateException("Нет места в хранилище для нового контейнера")
         }
 
-        val newAmount = currentAmount + amountToAdd
-        val totalStorageUsed = storage.values.sum()
-        if (totalStorageUsed + amountToAdd > storageCapacity) {
-            val availableStorageSpace = storageCapacity - totalStorageUsed
-            if (availableStorageSpace < containerCapacity) {
-                throw IllegalStateException("Недостаточно места в хранилище")
-            }
-            val actualAdd = if (amountToAdd > availableStorageSpace) {
-                availableStorageSpace
-            } else {
-                amountToAdd
-            }
-            storage[cereal] = currentAmount + actualAdd
-            return amount - actualAdd
-        } else {
-            storage[cereal] = newAmount
-            return amount - amountToAdd
+        val containerExists = storage.containsKey(cereal)
+        if (!containerExists && currentAmount == 0f) {
+            storage[cereal] = 0f
         }
+
+        val canAdd = if (amount <= spaceInContainer) amount else spaceInContainer
+        val newAmount = currentAmount + canAdd
+        storage[cereal] = newAmount
+
+        return amount - canAdd
     }
 
     override fun getCereal(cereal: Cereal, amount: Float): Float {

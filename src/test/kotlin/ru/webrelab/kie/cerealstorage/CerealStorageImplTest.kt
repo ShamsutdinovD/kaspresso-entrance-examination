@@ -99,8 +99,8 @@ class CerealStorageImplTest {
 
     @Test
     fun `should throw if no space in storage`() {
-        storage.addCereal(Cereal.BULGUR, 10f)
-        storage.addCereal(PEAS, 10f)
+        storage.addCereal(Cereal.BULGUR, 1f)
+        storage.addCereal(PEAS, 1f)
         assertThrows(IllegalStateException::class.java) {
             storage.addCereal(Cereal.BUCKWHEAT, 1f)
         }
