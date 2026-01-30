@@ -1,5 +1,7 @@
 package ru.webrelab.kie.cerealstorage
 
+import kotlin.IllegalStateException
+
 
 class CerealStorageImpl(
     override val containerCapacity: Float,
@@ -22,8 +24,9 @@ class CerealStorageImpl(
         val currentAmount = storage[cereal] ?: 0f
         val currentContainerAmount = currentAmount
 
+        val amountContainer = storageCapacity/containerCapacity
+
         val spaceLeftInContainer = containerCapacity - currentContainerAmount
-        val totalAvailableSpace = getSpace(cereal)
 
         val amountToAdd = if (amount <= spaceLeftInContainer) {
             amount
@@ -35,7 +38,7 @@ class CerealStorageImpl(
         val totalStorageUsed = storage.values.sum()
         if (totalStorageUsed + amountToAdd > storageCapacity) {
             val availableStorageSpace = storageCapacity - totalStorageUsed
-            if (availableStorageSpace <= 0) {
+            if (availableStorageSpace < containerCapacity) {
                 throw IllegalStateException("Недостаточно места в хранилище")
             }
             val actualAdd = if (amountToAdd > availableStorageSpace) {
@@ -54,18 +57,18 @@ class CerealStorageImpl(
     override fun getCereal(cereal: Cereal, amount: Float): Float {
         if (amount < 0) throw IllegalArgumentException("Количество не может быть отрицательным")
         val currentAmount = storage[cereal] ?: 0f
-        val amountToTake = if (amount <= currentAmount) amount else currentAmount
+        val amountToTake = if (amount <= currentAmount) amount else 0f
         storage[cereal] = currentAmount - amountToTake
-        if (storage[cereal] == 0f) {
-            storage.remove(cereal)
-        }
         return amountToTake
     }
 
     override fun removeContainer(cereal: Cereal): Boolean {
-        val currentAmount = storage[cereal] ?: return false
-            storage.remove(cereal)
-            return true
+        val currentAmount = storage[cereal]
+        if (currentAmount == null || currentAmount != 0f) {
+            return false
+        }
+        storage.remove(cereal)
+        return true
     }
 
     override fun getAmount(cereal: Cereal): Float {
@@ -73,7 +76,7 @@ class CerealStorageImpl(
     }
 
     override fun getSpace(cereal: Cereal): Float {
-        val currentAmount = storage[cereal] ?: 0f
+        val currentAmount = storage[cereal] ?: throw IllegalStateException("проверяемого контейнера нет")
         return containerCapacity - currentAmount
     }
 
