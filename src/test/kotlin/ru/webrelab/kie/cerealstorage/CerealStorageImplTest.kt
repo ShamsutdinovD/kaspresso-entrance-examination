@@ -127,4 +127,14 @@ class CerealStorageImplTest {
         storage.addCereal(Cereal.RICE, 2f)
         assertEquals(9f, storage.getAmount(Cereal.RICE))
     }
+
+    @Test
+    fun `should get incorrect `() {
+        storage.addCereal(Cereal.RICE, 10f)
+        storage.addCereal(Cereal.BUCKWHEAT, 10f)
+        CerealStorageImpl(10f, 22f)
+        assertThrows(IllegalStateException::class.java) {
+            storage.addCereal(Cereal.BULGUR, 10f)
+        }
+    }
 }

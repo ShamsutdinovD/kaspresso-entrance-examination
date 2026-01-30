@@ -1,6 +1,7 @@
 package ru.webrelab.kie.cerealstorage
 
 import kotlin.IllegalStateException
+import kotlin.math.floor
 
 
 class CerealStorageImpl(
@@ -25,7 +26,7 @@ class CerealStorageImpl(
         val currentAmount = storage[cereal] ?: 0f
         val spaceInContainer = containerCapacity - currentAmount
 
-        val amountContainerInStorage = storageCapacity/containerCapacity
+        val amountContainerInStorage = floor(storageCapacity/containerCapacity)
         val containerCount = storage.keys.size
         if (containerCount >= amountContainerInStorage) {
             throw IllegalStateException("Нет места в хранилище для нового контейнера")
